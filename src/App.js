@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import emailjs from "emailjs-com";
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [submit, setSubmit] = useState(false);
   const [error, setError] = useState("");
   const sendMail = (e) => {
     e.preventDefault();
+    setLoading(true);
     emailjs
       .sendForm(
         "service_dseum91",
@@ -16,11 +18,13 @@ function App() {
       .then((res) => {
         setSubmit(true);
         setError("");
+        res && setLoading(false);
         console.log(res);
       })
       .catch((err) => {
         setError("Something went wrong");
         setSubmit(false);
+        err && setLoading(false);
         console.log(err);
       });
   };
@@ -40,7 +44,15 @@ function App() {
             <input type="email" name="email" required />
             <label>Message</label>
             <textarea name="message" required />
-            <button>Send</button>
+            <button>
+              {loading && (
+                <i
+                  className="fa fa-circle-o-notch fa-spin"
+                  style={{ marginRight: "5px" }}
+                />
+              )}
+              Send
+            </button>
           </form>
         </section>
       </main>
